@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build  && next export && run build:server",
     "start": "next start",
     "lint": "eslint",
     "dev:server": "nodemon --watch src/app/api --exec \"next dev\""

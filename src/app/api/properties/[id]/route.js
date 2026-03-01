@@ -1,7 +1,7 @@
 // app/api/properties/[id]/route.js
 import { NextResponse } from 'next/server';
 import connectDB from '@/libs/models/mongodb';
-import Property from '@/libs/models/mongodb/Property';
+import Property from '@/app/apis/properties/models/Property';
 import { firebaseStorage } from '@/libs/firebase/storage';
 
 // GET /api/properties/[id] - Buscar propriedade por ID
