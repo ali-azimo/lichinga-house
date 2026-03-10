@@ -1,0 +1,123 @@
+import bycryptjs from 'bcryptjs';
+import User from '../models/user.model.js';
+import { errorHandler } from '../utils/erros.js';
+import Agri from '../models/agri.model.js';
+import Diver from "../models/diver.model.js"; // ajusta o caminho conforme necessário
+import Minin from '../models/minin.model.js';
+import Saude from '../models/saude.model.js';
+import Imo from '../models/imo.model.js';
+
+export const updateUser = async(req, res, next) => {
+    if (req.user.id !== req.params.id) return next(errorHandler(401, "Apenas podes atualizar seus dados!"))
+    try {
+        if (req.body.password) {
+            req.body.password = bycryptjs.hashSync(req.body.password, 10)
+        }
+        const updateUser = await User.findByIdAndUpdate(req.params.id, {
+            $set: {
+                username: req.body.username,
+                email: req.body.email,
+                password: req.body.password,
+                avatar: req.body.avatar,
+            }
+        }, { new: true })
+        const { password, ...rest } = updateUser._doc
+        res.status(200).json(rest);
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const deleteUser = async(req, res, next) => {
+    if (req.user.id !== req.params.id) return next(errorHandler(401, "Apenas o usuario pode deletar sua conta!"));
+    try {
+        await User.findByIdAndDelete(req.params.id);
+        res.clearCookie('access_token');
+        res.status(200).json('Usuario deletado com sucesso!');
+    } catch (error) {
+        next(error)
+    }
+}
+export const signOut = async(req, res, next) => {
+    try {
+        res.clearCookie('access_token');
+        res.status(200).json('Usuario deslogado com sucesso!');
+    } catch (error) {
+        next(error)
+    }
+};
+
+export const getUserImo = async (req, res, next) => {
+  if (req.user.id === req.params.id) {
+    try {
+      const imos = await Imo.find({ userRef: req.params.id });
+      res.status(200).json(imos);
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    return next(errorHandler(401, 'Apenas o usuário pode ver as suas próprias listagens!'));
+  }
+};
+export const getUser = async(req, res, next) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) return next(errorHandler(404, "Usuario não encontrado!"));
+        const { password: pass, ...rest } = user._doc;
+        res.status(200).json(rest);
+    } catch (error) {
+        next(error);
+    }
+};
+
+//Agricultura
+export const getUserAgri = async(req, res, next) => {
+    if (req.user.id === req.params.id) {
+        try {
+            const agris = await Agri.find({ userRef: req.params.id });
+            res.status(200).json(agris);
+        } catch (error) {
+            next(error)
+        }
+    } else {
+        return next(errorHandler(401, 'Apenas o usuario pode ver suas proprios post!'));
+    }
+};
+export const getUserDiver = async (req, res, next) => {
+  if (req.user.id === req.params.id) {
+    try {
+      const diverItems = await Diver.find({ userRef: req.params.id });
+      res.status(200).json(diverItems);
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    return next(errorHandler(401, 'Apenas o usuário pode ver os seus próprios dados!'));
+  }
+};
+
+export const getUserSaude = async (req, res, next) => {
+  if (req.user.id === req.params.id) {
+    try {
+      const saudeItems = await Saude.find({ userRef: req.params.id });
+      res.status(200).json(saudeItems);
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    return next(errorHandler(401, 'Apenas o usuário pode ver os seus próprios dados!'));
+  }
+};
+
+export const getUserMinin = async (req, res, next) => {
+  if (req.user.id === req.params.id) {
+    try {
+      const mininItems = await Minin.find({ userRef: req.params.id });
+      res.status(200).json(mininItems);
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    return next(errorHandler(401, 'Apenas o usuário pode ver os seus próprios dados!'));
+  }
+};
