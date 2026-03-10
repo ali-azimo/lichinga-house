@@ -44,6 +44,21 @@ export const signin = async (req, res, next) => {
       })
       .status(200)
       .json(rest);
+
+     // Detectar se está em produção
+const isProduction = process.env.NODE_ENV === 'production';
+
+res
+  .cookie('access_token', token, {
+    httpOnly: true,
+    secure: isProduction, // Só true em produção (HTTPS)
+    sameSite: isProduction ? 'None' : 'Lax', // 'None' exige HTTPS
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    path: '/',
+  })
+  .status(200)
+  .json(rest);
+   
   } catch (error) {
     next(error);
   }

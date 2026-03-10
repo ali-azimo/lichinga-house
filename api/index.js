@@ -49,6 +49,7 @@ app.get('/api/status', (req, res) => {
   res.json({ success: true, message: 'API BGS online' });
 });
 
+
 // Servir arquivos estáticos do React
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
@@ -56,6 +57,7 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 app.get('/:catchAll', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
 });
+
 
 // Middleware de erro
 app.use((err, req, res, next) => {
