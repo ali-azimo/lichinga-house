@@ -1,22 +1,24 @@
-# Usa uma imagem oficial do Node.js
 FROM node:20-alpine
 
-# Define o diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copia os arquivos de dependência primeiro (otimiza o cache do Docker)
+# Copiar apenas os arquivos de configuração primeiro
 COPY api/package*.json ./api/
 COPY client/package*.json ./client/
 
-# Instala as dependências do backend e do frontend
+# Instalar dependências
 RUN cd api && npm ci --only=production
-RUN cd client && npm ci && npm run build
+RUN cd client && npm ci
 
-# Copia o resto do código
+# Copiar o resto do código (excluindo node_modules e dist via .dockerignore)
 COPY . .
 
-# Expõe a porta que seu servidor usa (ex: 3000)
+# Criar .dockerignore para garantir
+RUN echo "node_modules\nclient/node_modules\ndist\nclient/dist\n.env" > .dockerignore
+
+# Fazer o build do frontend
+RUN cd client && npm run build
+
 EXPOSE 3000
 
-# Comando para iniciar o servidor
 CMD ["node", "api/index.js"]
