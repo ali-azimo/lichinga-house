@@ -49,15 +49,28 @@ app.get('/api/status', (req, res) => {
   res.json({ success: true, message: 'API BGS online' });
 });
 
-
 // Servir arquivos estáticos do React
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// ✅ ROTA CURINGA CORRIGIDA - use '/:catchAll' em vez de '*' ou '/*'
-app.get('/:catchAll', (req, res) => {
+// ✅ ROTA CURINGA CORRIGIDA - com nome obrigatório para path-to-regexp
+app.get('*catchAll', (req, res) => {
+  // Ignora rotas da API (retorna 404 para APIs não encontradas)
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ 
+      success: false, 
+      message: 'Rota da API não encontrada' 
+    });
+  }
+  
+  // Para todas as outras rotas, serve o index.html do React
+  // Isso permite que o React Router lide com rotas como:
+  // /imo/69a46d795f97914d88ad969b
+  // /agri/qualquer-coisa
+  // /dashboard/configuracoes
+  // Qualquer rota que não seja da API
+  console.log(`🌐 Rota React capturada: ${req.path}`); // Log opcional para debug
   res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
 });
-
 
 // Middleware de erro
 app.use((err, req, res, next) => {
