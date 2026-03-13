@@ -169,13 +169,13 @@ export default function Imo({ type }) {
                         rel="noreferrer"
                         className="inline-flex items-center gap-2 text-green-600 hover:underline"
                       >
-                        <FaWhatsapp /> WhatsApp: +258 824533491 / 875826662
+                        <FaWhatsapp /> WhatsApp: +25887582662
                       </a>
                       <a
                         href="tel:+2588758267466"
                         className="inline-flex items-center gap-2 text-blue-600 hover:underline"
                       >
-                        <FaPhone /> Ligar: +258 824533491 / 875826662
+                        <FaPhone /> Ligar: +25887582662 / 824533491
                       </a>
                       <a
                         href="mailto:bgs.soluction@gmail.com"
