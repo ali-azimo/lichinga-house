@@ -19,6 +19,6 @@ RUN echo "node_modules\nclient/node_modules\ndist\nclient/dist\n.env" > .dockeri
 # Fazer o build do frontend
 RUN cd client && npm run build
 
-EXPOSE 3000
+EXPOSE 4000
 
 CMD ["node", "api/index.js"]
