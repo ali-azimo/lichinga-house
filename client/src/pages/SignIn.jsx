@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   signInStart,
   signInSuccess,
-  signIFailure  // Corrigido o nome
+  signIFailure
 } from '../redux/user/userSlice.js';
 import { FaEnvelope, FaLock, FaArrowRight, FaPhone } from 'react-icons/fa';
 
@@ -14,19 +14,21 @@ export default function SignIn() {
     password: ''
   });
   const [showError, setShowError] = useState(false);
-  const [emailExists, setEmailExists] = useState(true); // Novo estado para verificar email
-  const [checkingEmail, setCheckingEmail] = useState(false); // Estado para verificação
+  const [emailExists, setEmailExists] = useState(true);
+  const [checkingEmail, setCheckingEmail] = useState(false);
+  const [localLoading, setLocalLoading] = useState(false); // Loading local para não depender apenas do Redux
   
   const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Função para verificar se o email existe no sistema
+  // Função para verificar se o email existe
   const checkEmailExists = async (email) => {
     if (!email || !email.includes('@')) return;
     
     setCheckingEmail(true);
     try {
+      // IMPORTANTE: Aqui você precisa ter este endpoint no backend
       const res = await fetch(`/api/auth/check-email?email=${encodeURIComponent(email)}`, {
         method: 'GET',
         headers: {
@@ -39,28 +41,29 @@ export default function SignIn() {
       if (res.ok) {
         setEmailExists(data.exists);
         if (!data.exists) {
-          dispatch(signInFailure('Este email não está cadastrado no sistema'));
+          dispatch(signIFailure('Este email não está cadastrado no sistema'));
           setShowError(true);
         } else {
           setShowError(false);
-          dispatch(signInFailure(null));
+          dispatch(signIFailure(null));
         }
       }
     } catch (error) {
       console.error('Erro ao verificar email:', error);
-      // Não mostrar erro ao usuário, apenas continuar
+      // Se não conseguir verificar, assume que existe para não bloquear
+      setEmailExists(true);
     } finally {
       setCheckingEmail(false);
     }
   };
 
-  // Debounce para verificar email enquanto usuário digita
+  // Debounce para verificar email
   useEffect(() => {
     const timer = setTimeout(() => {
       if (formData.email && formData.email.includes('@')) {
         checkEmailExists(formData.email);
       }
-    }, 500); // Aguarda 500ms após parar de digitar
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [formData.email]);
@@ -73,33 +76,32 @@ export default function SignIn() {
     
     // Limpar erro quando usuário começa a digitar
     if (showError) setShowError(false);
-    if (error) dispatch(signInFailure(null));
+    if (error) dispatch(signIFailure(null));
     
-    // Resetar verificação de email quando o campo muda
     if (e.target.id === 'email') {
-      setEmailExists(true); // Assume que existe até verificar
+      setEmailExists(true);
     }
   };
 
   const validateForm = () => {
-    // Verificar campos vazios
+    // Verificar campos vazios PRIMEIRO
     if (!formData.email || !formData.password) {
-      dispatch(signInFailure('Por favor, preencha todos os campos'));
+      dispatch(signIFailure('Por favor, preencha todos os campos'));
       setShowError(true);
       return false;
     }
     
-    // Validação básica de email
+    // Validação de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      dispatch(signInFailure('Por favor, insira um email válido'));
+      dispatch(signIFailure('Por favor, insira um email válido'));
       setShowError(true);
       return false;
     }
     
-    // Verificar se o email existe (se já verificamos)
+    // Verificar se o email existe (APÓS validação básica)
     if (!emailExists) {
-      dispatch(signInFailure('Este email não está cadastrado no sistema'));
+      dispatch(signIFailure('Este email não está cadastrado no sistema'));
       setShowError(true);
       return false;
     }
@@ -110,17 +112,21 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validar formulário antes de enviar
-    if (!validateForm()) return;
+    // VALIDAÇÃO ANTES DE QUALQUER COISA
+    if (!validateForm()) {
+      return; // IMPORTANTE: Retorna aqui sem iniciar loading
+    }
     
-    // Verificar se ainda está checando email
+    // Se ainda está verificando email, não prossegue
     if (checkingEmail) {
-      dispatch(signInFailure('Aguardando verificação do email...'));
+      dispatch(signIFailure('Aguardando verificação do email...'));
       return;
     }
     
+    // SÓ INICIA O LOADING DEPOIS DE TODAS AS VALIDAÇÕES
     try {
       dispatch(signInStart());
+      setLocalLoading(true);
       setShowError(false);
       
       console.log('Enviando dados de login:', { email: formData.email });
@@ -145,13 +151,16 @@ export default function SignIn() {
 
       const data = await res.json();
 
-      // Verificar se o email não existe (erro específico do backend)
-      if (data.message?.includes('não encontrado') || 
-          data.message?.includes('não cadastrado') ||
-          data.error?.includes('não existe')) {
+      // Verificar erro específico de email não encontrado
+      if (data.message?.toLowerCase().includes('não encontrado') || 
+          data.message?.toLowerCase().includes('não cadastrado') ||
+          data.message?.toLowerCase().includes('invalid credentials') ||
+          data.error?.toLowerCase().includes('não existe')) {
+        
         setEmailExists(false);
-        dispatch(signInFailure('Email não cadastrado. Por favor, verifique ou contacte o administrador.'));
+        dispatch(signIFailure('Email não cadastrado. Por favor, verifique ou contacte o administrador.'));
         setShowError(true);
+        setLocalLoading(false);
         return;
       }
 
@@ -160,15 +169,16 @@ export default function SignIn() {
         const errorMessage = data.message || 
                             data.error || 
                             `Erro ${res.status}: ${res.statusText}`;
-        dispatch(signInFailure(errorMessage));
+        dispatch(signIFailure(errorMessage));
         setShowError(true);
+        setLocalLoading(false);
         return;
       }
 
-      // ✅ LOGIN BEM SUCEDIDO
+      // LOGIN BEM SUCEDIDO
       console.log('Login realizado com sucesso:', data);
       
-      // 🔐 Salvar token e dados do usuário
+      // Salvar token e dados
       if (data.access_token || data.token) {
         localStorage.setItem('access_token', data.access_token || data.token);
       }
@@ -177,29 +187,30 @@ export default function SignIn() {
         localStorage.setItem('user', JSON.stringify(data.user));
       }
 
-      // Disparar ação de sucesso
       dispatch(signInSuccess(data.user || data));
-      
-      // Redirecionar para dashboard
       navigate('/dashboard');
 
     } catch (error) {
       console.error('Erro detalhado:', error);
-      dispatch(signInFailure('Erro de conexão. Verifique sua internet e tente novamente.'));
+      dispatch(signIFailure('Erro de conexão. Verifique sua internet e tente novamente.'));
       setShowError(true);
+      setLocalLoading(false);
     }
   };
+
+  // Combine loading do Redux com loading local
+  const isLoading = loading || localLoading;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-        {/* Cabeçalho com gradiente */}
+        {/* Cabeçalho */}
         <div className="bg-gradient-to-r from-[#1F2E54] to-[#2A3A6E] p-6 text-center">
           <h1 className="text-3xl font-bold text-white mb-2">Bem-vindo de volta!</h1>
           <p className="text-blue-200 text-sm">Entre para acessar sua conta</p>
         </div>
 
-        {/* Corpo do formulário */}
+        {/* Corpo */}
         <div className="p-6">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Campo Email */}
@@ -220,9 +231,8 @@ export default function SignIn() {
                   id="email"
                   value={formData.email}
                   onChange={handleChange}
-                  disabled={loading}
+                  disabled={isLoading}
                 />
-                {/* Indicador de verificação de email */}
                 {checkingEmail && formData.email && (
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                     <svg className="animate-spin h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -231,7 +241,6 @@ export default function SignIn() {
                     </svg>
                   </div>
                 )}
-                {/* Ícone de erro quando email não existe */}
                 {!emailExists && formData.email && !checkingEmail && (
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                     <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -240,7 +249,6 @@ export default function SignIn() {
                   </div>
                 )}
               </div>
-              {/* Mensagem de erro específica para email não cadastrado */}
               {!emailExists && formData.email && !checkingEmail && (
                 <p className="mt-1 text-xs text-red-600">
                   Este email não está cadastrado. <Link to="/team" className="underline font-medium">Contacte o administrador</Link>
@@ -264,7 +272,7 @@ export default function SignIn() {
                   id="password"
                   value={formData.password}
                   onChange={handleChange}
-                  disabled={loading || !emailExists} // Desabilita se email não existe
+                  disabled={isLoading || (!emailExists && formData.email !== '')}
                 />
               </div>
             </div>
@@ -288,10 +296,10 @@ export default function SignIn() {
             {/* Botão de submit */}
             <button
               type="submit"
-              disabled={loading || checkingEmail || !emailExists}
+              disabled={isLoading || checkingEmail || (!emailExists && formData.email !== '')}
               className="w-full bg-gradient-to-r from-[#1F2E54] to-[#2A3A6E] text-white py-3 px-4 rounded-lg font-medium hover:from-[#2A3A6E] hover:to-[#1F2E54] transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
             >
-              {loading ? (
+              {isLoading ? (
                 <>
                   <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -312,7 +320,7 @@ export default function SignIn() {
             </button>
           </form>
 
-          {/* Linha divisória */}
+          {/* Rodapé */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
@@ -322,7 +330,6 @@ export default function SignIn() {
             </div>
           </div>
 
-          {/* Contato com Admin */}
           <div className="text-center space-y-3">
             <p className="text-gray-600 text-sm">
               Não tem conta ou esqueceu a senha?
@@ -336,7 +343,6 @@ export default function SignIn() {
             </Link>
           </div>
 
-          {/* Links adicionais */}
           <div className="mt-4 text-center">
             <Link to="/" className="text-sm text-[#1F2E54] hover:underline">
               ← Voltar para página inicial
