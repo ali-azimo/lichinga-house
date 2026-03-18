@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
 // Rotas
 import userRouter from './routes/user.route.js';
 import cadRouter from './routes/cad.route.js';
