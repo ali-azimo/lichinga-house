@@ -149,7 +149,7 @@ export default function CreateImo() {
         return;
       }
 
-      navigate(`/api/imo/${data._id}`);
+      navigate(`/imo/${data._id}`);
     } catch (error) {
       setErrorSubmit(error.message);
       setLoadingSubmit(false);
