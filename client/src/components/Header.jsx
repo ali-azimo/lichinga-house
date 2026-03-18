@@ -57,14 +57,15 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
+    <header className="bg-white text-slate-900 sticky top-0 z-50 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-        <div className="flex  items-center gap-6">
-          <Link to="/" className="flex flex-col">
-            <img src={logo} alt="Logo" className="h-23 w-auto" />
-            <span className="hidden sm:inline text-sm uppercase text-sky-400 font-bold ml-2">
-              Bule Global Solution
-            </span>
+        <div className="flex items-center gap-6">
+          <Link to="/" className="flex items-center">
+            <img 
+              src={logo} 
+              alt="Logo" 
+              className="h-24 w-auto max-h-24 object-contain" 
+            />
           </Link>
 
           {/* Links de navegação - Desktop */}
@@ -73,7 +74,7 @@ export default function Header() {
               <Link 
                 key={idx} 
                 to={item.route} 
-                className="hover:text-sky-400 text-sm"
+                className="hover:text-sky-600 text-sm font-medium"
               >
                 {item.label}
               </Link>
@@ -85,7 +86,7 @@ export default function Header() {
           {/* Botão menu mobile */}
           <button 
             onClick={() => setNavOpen(true)} 
-            className="sm:hidden text-white hover:text-sky-400"
+            className="sm:hidden text-slate-900 hover:text-sky-600"
             aria-label="Abrir menu"
           >
             <FaBars size={20} />
@@ -101,13 +102,13 @@ export default function Header() {
                 <img
                   src={currentUser.avatar}
                   alt="Perfil"
-                  className="h-8 w-8 rounded-full border border-sky-500"
+                  className="h-8 w-8 rounded-full border border-sky-600"
                 />
               </div>
             ) : (
               <button 
                 onClick={() => setUserOpen(!userOpen)}
-                className="text-white hover:text-sky-400"
+                className="text-slate-900 hover:text-sky-600"
                 aria-label="Menu do usuário"
               >
                 <FaUser size={20} />
@@ -116,13 +117,13 @@ export default function Header() {
 
             {/* Dropdown do usuário */}
             {userOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-md shadow-lg z-20">
+              <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-md shadow-lg z-20">
                 {currentUser ? (
                   <>
                     <Link 
                       to="/profile" 
                       onClick={() => setUserOpen(false)}
-                      className="flex items-center px-4 py-2 hover:bg-slate-700"
+                      className="flex items-center px-4 py-2 hover:bg-slate-100 text-slate-900"
                     >
                       <FaUser className="mr-2" /> Perfil
                     </Link>
@@ -131,7 +132,7 @@ export default function Header() {
                         setUserOpen(false); 
                         handleSignout(); 
                       }}
-                      className="w-full text-left flex items-center px-4 py-2 hover:bg-slate-700 text-red-400"
+                      className="w-full text-left flex items-center px-4 py-2 hover:bg-slate-100 text-red-600"
                     >
                       <FaSignOutAlt className="mr-2" /> Sair
                     </button>
@@ -140,7 +141,7 @@ export default function Header() {
                   <Link 
                     to="/sign-in" 
                     onClick={() => setUserOpen(false)}
-                    className="flex items-center px-4 py-2 hover:bg-slate-700"
+                    className="flex items-center px-4 py-2 hover:bg-slate-100 text-slate-900"
                   >
                     <FaUser className="mr-2" /> Entrar
                   </Link>
@@ -153,12 +154,16 @@ export default function Header() {
 
       {/* Menu mobile */}
       {navOpen && (
-        <div className="fixed inset-0 bg-slate-900 bg-opacity-95 z-50 flex flex-col">
-          <div className="flex justify-between items-center p-4 border-b border-slate-800">
-            <img src={logo} alt="Logo" className="h-10 w-auto" />
+        <div className="fixed inset-0 bg-white z-50 flex flex-col">
+          <div className="flex justify-between items-center p-4 border-b border-slate-200">
+            <img 
+              src={logo} 
+              alt="Logo" 
+              className="h-16 w-auto object-contain" 
+            />
             <button 
               onClick={() => setNavOpen(false)}
-              className="text-white hover:text-sky-400"
+              className="text-slate-900 hover:text-sky-600"
               aria-label="Fechar menu"
             >
               <FaTimes size={24} />
@@ -168,18 +173,18 @@ export default function Header() {
           {/* Campo de busca - Só aparece no mobile */}
           <form 
             onSubmit={handleSearch}
-            className="px-6 py-4 border-b border-slate-800 relative"
+            className="px-6 py-4 border-b border-slate-200 relative"
           >
             <input
               type="text"
               placeholder="Buscar..."
-              className="w-full bg-slate-800 text-white placeholder:text-slate-400 px-4 py-2 rounded-md"
+              className="w-full bg-slate-100 text-slate-900 placeholder:text-slate-500 px-4 py-2 rounded-md"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
             />
             <button 
               type="submit"
-              className="absolute right-8 top-1/2 transform -translate-y-1/2 text-sky-400"
+              className="absolute right-8 top-1/2 transform -translate-y-1/2 text-sky-600"
               disabled={!searchTerm.trim()}
             >
               <FaSearch size={18} />
@@ -194,7 +199,7 @@ export default function Header() {
                   <Link
                     to={item.route}
                     onClick={() => setNavOpen(false)}
-                    className="block py-2 hover:text-sky-400 text-lg"
+                    className="block py-2 hover:text-sky-600 text-lg text-slate-900"
                   >
                     {item.label}
                   </Link>
@@ -204,13 +209,13 @@ export default function Header() {
           </nav>
 
           {/* Seção do usuário - Mobile */}
-          <div className="p-6 border-t border-slate-800">
+          <div className="p-6 border-t border-slate-200">
             {currentUser ? (
               <>
                 <Link 
                   to="/profile" 
                   onClick={() => setNavOpen(false)}
-                  className="flex items-center py-2 hover:text-sky-400"
+                  className="flex items-center py-2 hover:text-sky-600 text-slate-900"
                 >
                   <FaUser className="mr-2" /> Perfil
                 </Link>
@@ -219,7 +224,7 @@ export default function Header() {
                     setNavOpen(false);
                     handleSignout();
                   }}
-                  className="flex items-center py-2 text-red-400 hover:text-red-300"
+                  className="flex items-center py-2 text-red-600 hover:text-red-700"
                 >
                   <FaSignOutAlt className="mr-2" /> Sair
                 </button>
@@ -228,7 +233,7 @@ export default function Header() {
               <Link 
                 to="/sign-in" 
                 onClick={() => setNavOpen(false)}
-                className="flex items-center py-2 hover:text-sky-400"
+                className="flex items-center py-2 hover:text-sky-600 text-slate-900"
               >
                 <FaUser className="mr-2" /> Entrar
               </Link>

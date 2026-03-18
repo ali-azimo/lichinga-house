@@ -1,9 +1,10 @@
 import React, { useRef, useState } from "react";
-import { FaEnvelope, FaCheck, FaFacebook, FaWhatsapp, FaLinkedin, FaGithub } from "react-icons/fa";
+import { FaEnvelope, FaCheck, FaFacebook, FaWhatsapp, FaLinkedin, FaGithub, FaUserTie, FaCode, FaChartLine } from "react-icons/fa";
 import emailjs from "@emailjs/browser";
-import mungoy from "../assets/img/mungoy.jpg";
-import azimo from "../assets/img/Azimo.jpg";
-import aderito from "../assets/img/Aderito.jpg";
+import patricio from "../assets/img/patricio.jpeg";
+import ali from "../assets/img/Azimo.jpg";
+import virgilio from "../assets/img/virgilio.jpeg";
+import logo from "../assets/img/logo.png";
 
 const SOCIAL_ICONS = {
   facebook: FaFacebook,
@@ -20,39 +21,56 @@ export default function Team() {
 
   const teamMembers = [
     {
-      name: "Dércio Mauricio Mungoy",
-      role: "Especialista em Vendas",
-      description:
-        "Dércio é um profissional versátil e comprometido com a excelência. Destaca-se também como consultor nas áreas de mineração, construção de piscinas e água mineral. Com uma visão clara e estratégica, oferece soluções eficazes em diversos sectores, demonstrando profundo conhecimento do mercado moçambicano e um forte compromisso com os resultados em cada projecto que abraça.",
+      name: "Patrício Clemente Chapelemo",
+      role: "Contabilidade & Auditoria | Desenvolvedor Web",
+      description: [
+        "Formado em Contabilidade e Auditoria, Patrício alia sua sólida formação financeira com habilidades em desenvolvimento web. Responsável pela gestão contábil e financeira da Lichinga House, além de contribuir no desenvolvimento e manutenção das plataformas digitais da empresa. Sua visão analítica e técnica garante precisão nos processos financeiros e inovação nas soluções tecnológicas.",
+        "• Contabilidade e Auditoria",
+        "• Desenvolvimento Web Full Stack",
+        "• Análise Financeira"
+      ],
+      icon: <FaUserTie className="text-2xl text-[#00AEEF]" />,
       social: {
-        facebook: "https://www.facebook.com/dercio.mungoy",
-        whatsapp: "https://wa.me/258842507746",
-        linkedin: "https://www.linkedin.com/in/dercio-mungoy",
+        linkedin: "https://www.linkedin.com/in/patricio-chapelemo",
+        github: "https://github.com/patricio-chapelemo",
+        whatsapp: "https://wa.me/25884XXXXXXXX",
       },
-      image: mungoy,
+      image: patricio,
     },
     {
       name: "Ali Azimo",
-      role: "Programador Web",
-      description:
-        "Ali Azimo é responsável pelo desenvolvimento e manutenção das plataformas digitais da BGS. Com expertise em tecnologias web modernas, ele assegura uma presença online robusta e inovadora para a empresa.",
+      role: "RH | Contabilidade & Fiscalidade | Programador Web | Tradutor",
+      description: [
+        "Ali Azimo é um profissional multidisciplinar que combina expertise em Recursos Humanos, Contabilidade e Fiscalidade com habilidades técnicas em programação web. Atua como tradutor de língua inglesa, facilitando a comunicação em projetos internacionais. Sua versatilidade permite à Lichinga House oferecer serviços integrados e de alta qualidade.",
+        "• Técnico de RH",
+        "• Contabilidade e Fiscalidade",
+        "• Programação Web",
+        "• Tradução Inglês-Português"
+      ],
+      icon: <FaCode className="text-2xl text-[#00AEEF]" />,
       social: {
-        whatsapp: "https://wa.me/25884314455",
+        whatsapp: "https://wa.me/258874314455",
         linkedin: "https://www.linkedin.com/in/ali-azimo-0240142b0/",
         github: "https://github.com/ali-azimo",
       },
-      image: azimo,
+      image: ali,
     },
     {
-      name: "Aderito Bule",
-      role: "BGS Manager and Mining, Oil and Gas Advisor",
-      description:
-        "Com vasta experiência no sector de recursos naturais, Aderito contribui com visão estratégica e operacional para os projectos de mineração e energia da BGS.",
+      name: "Virgílio Mário Massamba",
+      role: "Gestor da Lichinga House",
+      description: [
+        "Como Gestor da Lichinga House, Virgílio Mário Massamba lidera a empresa com visão estratégica e conhecimento multidisciplinar. Especialista em Marketing, Contabilidade e Fiscalidade, ele coordena as operações nos setores imobiliário, construção e agrícola, garantindo que cada projeto atenda aos mais altos padrões de qualidade e compromisso com os clientes.",
+        "• Marketing Estratégico",
+        "• Contabilidade e Fiscalidade",
+        "• Gestão de Negócios",
+        "• Expansão de Mercado"
+      ],
+      icon: <FaChartLine className="text-2xl text-[#00AEEF]" />,
       social: {
-        whatsapp: "https://wa.me/258842507746",
-        linkedin: "https://www.linkedin.com/in/aderito-bule/",
+        linkedin: "https://www.linkedin.com/in/virgilio-massamba",
+        whatsapp: "https://wa.me/25886XXXXXXXX",
       },
-      image: aderito,
+      image: virgilio,
     },
   ];
 
@@ -81,77 +99,164 @@ export default function Team() {
 
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 py-12 md:py-16">
-      <header className="text-center mb-12">
-        <h1 className="text-3xl sm:text-4xl font-bold text-[#1F2E54] mb-4">A Nossa Equipa</h1>
-        <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-          Conheça os profissionais que tornam a BGS uma referência em confiança, excelência e compromisso em Moçambique e no mundo.
+      {/* Header com logo */}
+      <div className="flex flex-col items-center mb-12">
+        <img src={logo} alt="Lichinga House" className="w-32 mb-6" />
+        <h1 className="text-3xl sm:text-4xl font-bold text-[#1F2E54] mb-4">
+          Equipa Lichinga House
+        </h1>
+        <p className="text-gray-600 max-w-2xl mx-auto text-lg text-center">
+          Conheça os profissionais multidisciplinares que fazem da Lichinga House 
+          uma referência em imobiliária, construção e desenvolvimento agrícola em Moçambique.
         </p>
-      </header>
+      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+      {/* Grid da equipa */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {teamMembers.map((member, index) => (
           <div
             key={index}
-            className="bg-white p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300"
+            className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden group"
           >
-            <div className="flex flex-col items-center">
+            {/* Header com imagem e ícone */}
+            <div className="relative">
               <img
                 src={member.image}
                 alt={member.name}
-                className="w-32 h-32 md:w-36 md:h-36 rounded-full object-cover border-4 border-[#F4B400] mb-6"
+                className="w-full h-72 object-cover object-center"
                 loading="lazy"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://via.placeholder.com/400x400?text=Photo";
+                }}
               />
-              <h2 className="text-xl md:text-2xl font-semibold text-[#1F2E54] text-center">{member.name}</h2>
-              <p className="text-[#00AEEF] font-medium mt-2">{member.role}</p>
-              <p className="text-gray-700 mt-4 text-sm md:text-base text-center leading-relaxed">
-                {member.description}
-              </p>
+              <div className="absolute top-4 right-4 bg-[#1F2E54] text-white p-3 rounded-full shadow-lg">
+                {member.icon}
+              </div>
             </div>
-            <div className="flex justify-center gap-6 mt-8 text-2xl text-[#1F2E54]">
-              {Object.entries(member.social).map(([platform, url]) => {
-                const Icon = SOCIAL_ICONS[platform];
-                return Icon ? (
-                  <a
-                    key={platform}
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-[#F4B400] transition-colors duration-200"
-                    aria-label={`${platform} de ${member.name}`}
-                  >
-                    <Icon />
-                  </a>
-                ) : null;
-              })}
+
+            {/* Conteúdo */}
+            <div className="p-6">
+              <h2 className="text-xl font-bold text-[#1F2E54] mb-1">
+                {member.name}
+              </h2>
+              <p className="text-[#00AEEF] font-medium mb-4 text-sm">
+                {member.role}
+              </p>
+              
+              {/* Descrição em formato de lista */}
+              <div className="space-y-3 mb-4">
+                {member.description.map((item, i) => (
+                  <div key={i} className={i === 0 ? 'text-gray-700 text-sm' : ''}>
+                    {i === 0 ? (
+                      <p className="text-gray-700 text-sm leading-relaxed">{item}</p>
+                    ) : (
+                      <p className="text-gray-600 text-sm pl-3 border-l-2 border-[#00AEEF]">
+                        {item}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Redes Sociais */}
+              <div className="flex justify-start gap-4 mt-4 text-xl text-[#1F2E54]">
+                {Object.entries(member.social).map(([platform, url]) => {
+                  const Icon = SOCIAL_ICONS[platform];
+                  return Icon ? (
+                    <a
+                      key={platform}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-[#00AEEF] transition-colors duration-200 transform hover:scale-110"
+                      aria-label={`${platform} de ${member.name}`}
+                    >
+                      <Icon />
+                    </a>
+                  ) : null;
+                })}
+              </div>
             </div>
           </div>
         ))}
       </div>
 
+      {/* Estatísticas da Equipe */}
+      <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 bg-gradient-to-r from-[#1F2E54] to-[#00AEEF] text-white p-8 rounded-2xl shadow-xl">
+        <div className="text-center">
+          <div className="text-3xl font-bold">3</div>
+          <div className="text-sm opacity-90">Profissionais</div>
+        </div>
+        <div className="text-center">
+          <div className="text-3xl font-bold">12+</div>
+          <div className="text-sm opacity-90">Competências</div>
+        </div>
+        <div className="text-center">
+          <div className="text-3xl font-bold">2</div>
+          <div className="text-sm opacity-90">Anos de Experiência</div>
+        </div>
+        <div className="text-center">
+          <div className="text-3xl font-bold">100%</div>
+          <div className="text-sm opacity-90">Compromisso Local</div>
+        </div>
+      </div>
+
+      {/* Formulário de Contato */}
       <div className="mt-16 bg-white p-6 md:p-10 rounded-2xl shadow-xl">
         <h3 className="text-xl md:text-2xl font-semibold mb-8 text-center text-[#1F2E54]">
-          Envie-nos uma Mensagem
+          Fale com a Nossa Equipa
         </h3>
 
         <form className="space-y-6" ref={form} onSubmit={sendEmail}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[{ id: "username", label: "Nome", type: "text", placeholder: "Seu nome" }, { id: "subject", label: "Assunto", type: "text", placeholder: "Assunto" }, { id: "useremail", label: "Email", type: "email", placeholder: "Seu email" }].map(({ id, label, type, placeholder }) => (
-              <div key={id} className="flex flex-col">
-                <label htmlFor={id} className="text-sm text-gray-700 mb-1 font-medium">{label}</label>
-                <input
-                  id={id}
-                  type={type}
-                  name={id}
-                  placeholder={placeholder}
-                  required
-                  className="p-3 rounded-xl border border-gray-300 bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00AEEF] focus:bg-white transition"
-                />
-              </div>
-            ))}
+            <div className="flex flex-col">
+              <label htmlFor="username" className="text-sm text-gray-700 mb-1 font-medium">
+                Nome Completo
+              </label>
+              <input
+                id="username"
+                type="text"
+                name="username"
+                placeholder="Seu nome"
+                required
+                className="p-3 rounded-xl border border-gray-300 bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00AEEF] focus:bg-white transition"
+              />
+            </div>
+            
+            <div className="flex flex-col">
+              <label htmlFor="useremail" className="text-sm text-gray-700 mb-1 font-medium">
+                Email
+              </label>
+              <input
+                id="useremail"
+                type="email"
+                name="useremail"
+                placeholder="Seu email"
+                required
+                className="p-3 rounded-xl border border-gray-300 bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00AEEF] focus:bg-white transition"
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <label htmlFor="subject" className="text-sm text-gray-700 mb-1 font-medium">
+                Assunto
+              </label>
+              <input
+                id="subject"
+                type="text"
+                name="subject"
+                placeholder="Assunto da mensagem"
+                required
+                className="p-3 rounded-xl border border-gray-300 bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00AEEF] focus:bg-white transition"
+              />
+            </div>
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="message" className="text-sm text-gray-700 mb-1 font-medium">Mensagem</label>
+            <label htmlFor="message" className="text-sm text-gray-700 mb-1 font-medium">
+              Mensagem
+            </label>
             <textarea
               id="message"
               name="message"
@@ -162,24 +267,31 @@ export default function Team() {
             ></textarea>
           </div>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && (
+            <p className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">
+              {error}
+            </p>
+          )}
+          
           {isSuccess && (
-            <div className="flex items-center gap-2 text-green-600">
-              <FaCheck />
-              <span>Mensagem enviada com sucesso!</span>
+            <div className="flex items-center gap-2 text-green-600 bg-green-50 p-3 rounded-lg">
+              <FaCheck className="flex-shrink-0" />
+              <span>Mensagem enviada com sucesso! Entraremos em contato em breve.</span>
             </div>
           )}
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`w-full py-3 px-4 rounded-xl font-bold transition duration-200 flex items-center justify-center gap-2 text-[#1F2E54] ${
-              isSubmitting ? "bg-[#F4B400]/70 cursor-not-allowed" : "bg-[#F4B400] hover:bg-[#e3a800]"
+            className={`w-full py-4 px-4 rounded-xl font-bold transition duration-200 flex items-center justify-center gap-2 text-white ${
+              isSubmitting 
+                ? "bg-[#1F2E54]/70 cursor-not-allowed" 
+                : "bg-[#1F2E54] hover:bg-[#2a3a6e]"
             }`}
           >
             {isSubmitting ? (
               <>
-                <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
+                <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24" fill="none">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>

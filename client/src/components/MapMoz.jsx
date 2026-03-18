@@ -12,9 +12,10 @@ const containerStyle = {
   height: '400px',
 };
 
+// Coordenadas de Lichinga, Moçambique como centro padrão
 const centerDefault = {
-  lat: -25.9692,
-  lng: 32.5732, // Maputo como centro padrão
+  lat: -13.3128,
+  lng: 35.2406, // Lichinga, Moçambique
 };
 
 export default function MapMoz({ address }) {
@@ -48,6 +49,8 @@ export default function MapMoz({ address }) {
         };
         setCoordinates(newLocation);
         map.panTo(newLocation);
+        // Aumenta o zoom quando seleciona um local
+        map.setZoom(15);
       }
     }
   };
@@ -78,34 +81,50 @@ export default function MapMoz({ address }) {
   }, [address]);
 
   if (loadError || geoError) {
-    return <div className="text-red-500 text-center">Erro ao carregar o mapa.</div>;
+    return (
+      <div className="w-full max-w-4xl mx-auto bg-white rounded-lg shadow-md mt-8 p-8">
+        <div className="text-red-500 text-center">
+          Erro ao carregar o mapa. Por favor, tente novamente mais tarde.
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-white rounded-lg shadow-md mt-8 m-auto">
       {isLoaded && (
         <>
-          <Autocomplete
-            onLoad={onAutocompleteLoad}
-            onPlaceChanged={onPlaceChanged}
-          >
-            <input
-              type="text"
-              placeholder="Pesquisar localização..."
-              className="w-full px-4 py-2 border border-gray-300 bg-gray-50 rounded shadow m-auto my-2"
-            />
-          </Autocomplete>
+          <div className="p-4">
+            <Autocomplete
+              onLoad={onAutocompleteLoad}
+              onPlaceChanged={onPlaceChanged}
+              options={{
+                componentRestrictions: { country: 'mz' }, // Restringe busca para Moçambique
+                types: ['geocode', 'establishment'],
+              }}
+            >
+              <input
+                type="text"
+                placeholder="Pesquisar localização em Lichinga ou outra cidade de Moçambique..."
+                className="w-full px-4 py-2 border border-gray-300 bg-gray-50 rounded shadow focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              />
+            </Autocomplete>
+            <p className="text-xs text-gray-500 mt-1">
+              Digite o nome de um local em Moçambique (ex: Lichinga, Maputo, etc.)
+            </p>
+          </div>
 
           <GoogleMap
             mapContainerStyle={containerStyle}
             center={coordinates || centerDefault}
-            zoom={coordinates ? 15 : 13}
+            zoom={coordinates ? 16 : 10} // Zoom maior para Lichinga
             onLoad={onLoad}
             options={{
               zoomControl: true,
               streetViewControl: false,
               mapTypeControl: false,
-              fullscreenControl: false,
+              fullscreenControl: true,
+              mapTypeId: 'roadmap',
             }}
           >
             {coordinates && (
@@ -114,21 +133,35 @@ export default function MapMoz({ address }) {
                   position={coordinates}
                   title="Local do Imóvel"
                   onClick={() => setOpen(true)}
+                  animation={window.google?.maps?.Animation?.DROP}
                 />
                 {open && (
                   <InfoWindow
                     position={coordinates}
                     onCloseClick={() => setOpen(false)}
                   >
-                    <div className="text-sm">
-                      <h3 className="font-semibold">Imóvel</h3>
-                      <p>{address}</p>
+                    <div className="text-sm p-2">
+                      <h3 className="font-semibold text-gray-800">📍 Localização do Imóvel</h3>
+                      <p className="text-gray-600 mt-1 max-w-xs">{address}</p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Lichinga, Niassa - Moçambique
+                      </p>
                     </div>
                   </InfoWindow>
                 )}
               </>
             )}
           </GoogleMap>
+
+          {/* Informação adicional sobre Lichinga */}
+          {!coordinates && (
+            <div className="p-4 bg-blue-50 border-t border-blue-100">
+              <p className="text-sm text-blue-800">
+                <span className="font-semibold">📍 Lichinga</span> - Capital da província de Niassa, 
+                localizada no planalto de Lichinga, a aproximadamente 1.300 metros de altitude.
+              </p>
+            </div>
+          )}
         </>
       )}
     </div>
